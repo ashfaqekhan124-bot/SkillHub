@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillHub - India's Leading Digital Freelancing School</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); }
+
+        /* Navbar */
+        header { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 15px 50px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 30px; align-items: center; }
+        nav a { text-decoration: none; color: #64748b; font-weight: 500; transition: 0.3s; }
+        nav a:hover { color: var(--primary-color); }
+        .auth-nav-btns { display: flex; gap: 15px; }
+        .btn-login { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-signup { background: var(--primary-color); border: none; color: white; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-signup:hover { background: var(--secondary-color); }
+
+        /* Hero Section */
+        .hero { text-align: center; padding: 80px 20px; max-width: 900px; margin: 0 auto; }
+        .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; color: #0f172a; }
+        .hero p { font-size: 18px; color: #475569; margin-bottom: 35px; }
+        .btn-cta { background: var(--primary-color); color: white; border: none; padding: 14px 32px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: 0.3s; }
+        .btn-cta:hover { background: var(--secondary-color); transform: translateY(-2px); }
+
+        /* Dashboard Section */
+        .dashboard-container { max-width: 1000px; margin: 40px auto; padding: 20px; display: none; }
+        .dashboard-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .stat-box { background: #f1f5f9; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-box h3 { font-size: 24px; color: var(--primary-color); margin-bottom: 5px; }
+        .stat-box p { font-size: 14px; color: #64748b; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 40px; border-radius: 12px; width: 380px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-content h3 { margin-bottom: 20px; color: #0f172a; }
+        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; }
+        .modal-content input:focus { border-color: var(--primary-color); }
+        .modal-content button { width: 100%; background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; color: #94a3b8; }
+        .switch-mode { text-align: center; margin-top: 15px; font-size: 13px; color: var(--primary-color); cursor: pointer; }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            header { padding: 15px 20px; }
+            nav { display: none; }
+            .hero h1 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">⚡ SkillHub</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Our Courses</a>
+            <a href="#">About Us</a>
+            <a href="#">Refer & Earn</a>
+        </nav>
+        <div class="auth-nav-btns" id="authNavButtons">
+            <button class="btn-login" id="openLoginModal">Log in</button>
+            <button class="btn-signup" id="openSignupModal">Sign Up</button>
+        </div>
+        <div id="userProfileNav" style="display:none; align-items:center; gap:15px;">
+            <span id="userEmailDisplay" style="font-weight: 600; color: #475569;"></span>
+            <button class="btn-login" id="logoutBtn" style="border-color: #ef4444; color: #ef4444;">Logout</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <h1>BUILD SKILLS FOR THE WORLD AHEAD</h1>
+        <p>SkillHub is India’s Leading Digital Freelancing School helping thousands of learners grow with future-ready digital skills.</p>
+        <button class="btn-cta" id="startLearningBtn">Start Learning Today 🚀</button>
+    </section>
+
+    <!-- User Dashboard Section -->
+    <section class="dashboard-container" id="dashboardSection">
+        <div class="dashboard-card">
+            <h2>Welcome to your Dashboard</h2>
+            <p style="color: #64748b; margin-top: 5px;">Manage your course and track your referral earnings here.</p>
+            
+            <div style="margin-top: 25px; background: #eff6ff; padding: 15px; border-radius: 8px; border: 1px dashed #bfdbfe;">
+                <strong>Your Unique Referral Link:</strong>
+                <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <input type="text" id="refLinkInput" readonly style="background: white; border: 1px solid #cbd5e1; padding: 8px; border-radius: 4px; flex: 1;">
+                    <button id="copyRefBtn" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Copy</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h3 id="statTotalRefs">0</h3>
+                    <p>Total Referrals</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statSuccessfulPurchases">0</h3>
+                    <p>Successful Purchases</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="statTotalEarnings">₹0</h3>
+                    <p>Total Commission</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;" id="courseAccessBox">
+                <h3>Course Status: <span id="courseStatusText" style="color: #dc2626;">Locked 🔒</span></h3>
+                <p id="expiryText" style="font-size: 14px; color: #64748b; margin: 10px 0;"></p>
+                <button class="btn-cta" id="buyCourseBtn" style="background: #16a34a;">Unlock Course for ₹199</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h3 id="modalTitle">Sign Up</h3>
+            <input type="email" id="emailInput" placeholder="Enter your email">
+            <input type="password" id="passwordInput" placeholder="Enter password (min 6 chars)">
+            <button id="authSubmitBtn">Register</button>
+            <div class="switch-mode" id="switchModeText">Already have an account? Log in</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4i1WM-h4ndIjU_JMuTfKwZ41a1OHGe7Q",
+            authDomain: "skillhub-backend-c67c7.firebaseapp.com",
+            projectId: "skillhub-backend-c67c7",
+            storageBucket: "skillhub-backend-c67c7.firebasestorage.app",
+            messagingSenderId: "797741251582",
+            appId: "1:797741251582:web:9dd461cd0febdba5121eaf"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // UI Elements
+        const modal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const openLoginModal = document.getElementById('openLoginModal');
+        const openSignupModal = document.getElementById('openSignupModal');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const switchModeText = document.getElementById('switchModeText');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        
+        const authNavButtons = document.getElementById('authNavButtons');
+        const userProfileNav = document.getElementById('userProfileNav');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const heroSection = document.getElementById('heroSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const startLearningBtn = document.getElementById('startLearningBtn');
+        const refLinkInput = document.getElementById('refLinkInput');
+        const copyRefBtn = document.getElementById('copyRefBtn');
+        const buyCourseBtn = document.getElementById('buyCourseBtn');
+        const courseStatusText = document.getElementById('courseStatusText');
+        const expiryText = document.getElementById('expiryText');
+
+        let isLogin = false;
+
+        // Check URL for referral parameter (e.g. ?ref=USER_ID)
+        const urlParams = new URLSearchParams(window.location.search);
+        const referredBy = urlParams.get('ref');
+
+        openSignupModal.onclick = () => { isLogin = false; modalTitle.innerText = "Sign Up"; authSubmitBtn.innerText = "Register"; switchModeText.innerText = "Already have an account? Log in"; modal.style.display = 'flex'; };
+        openLoginModal.onclick = () => { isLogin = true; modalTitle.innerText = "Log In"; authSubmitBtn.innerText = "Log In"; switchModeText.innerText = "Don't have an account? Sign Up"; modal.style.display = 'flex'; };
+        startLearningBtn.onclick = () => { modal.style.display = 'flex'; };
+        closeModal.onclick = () => modal.style.display = 'none';
+        
+        switchModeText.onclick = () => {
+            isLogin = !isLogin;
+            modalTitle.innerText = isLogin ? "Log In" : "Sign Up";
+            authSubmitBtn.innerText = isLogin ? "Log In" : "Register";
+            switchModeText.innerText = isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log in";
+        };
+
+        // Authentication Handler (Email & Password Only)
+        authSubmitBtn.onclick = async () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (!email || !password) { alert("Please fill all fields!"); return; }
+
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    
+                    // Create User Document in Firestore with Referral tracking
+                    await setDoc(doc(db, "users", user.uid), {
+                        email: email,
+                        createdAt: new Date().toISOString(),
+                        referredBy: referredBy || null,
+                        hasPurchased: false,
+                        totalReferrals: 0,
+                        successfulPurchases: 0,
+                        totalEarnings: 0
+                    });
+
+                    // If referred by someone valid, increment referrer's count
+                    if (referredBy && referredBy !== user.uid) {
+                        const refDocRef = doc(db, "users", referredBy);
+                        const refSnap = await getDoc(refDocRef);
+                        if (refSnap.exists()) {
+                            await updateDoc(refDocRef, { totalReferrals: increment(1) });
+                        }
+                    }
+                }
+                modal.style.display = 'none';
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
+
+        // Auth State Observer
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                authNavButtons.style.display = 'none';
+                userProfileNav.style.display = 'flex';
+                userEmailDisplay.innerText = user.email;
+                heroSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+
+                // Set Unique Referral Link
+                const customRefCode = user.uid.substring(0, 8).toUpperCase();
+                const refLink = `${window.location.origin}${window.location.pathname}?ref=${user.uid}`;
+                refLinkInput.value = refLink;
+
+                // Fetch User Data from Firestore
+                const userDocRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userDocRef);
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    document.getElementById('statTotalRefs').innerText = data.totalReferrals || 0;
+                    document.getElementById('statSuccessfulPurchases').innerText = data.successfulPurchases || 0;
+                    document.getElementById('statTotalEarnings').innerText = `₹${data.totalEarnings || 0}`;
+
+                    if (data.hasPurchased) {
+                        courseStatusText.innerText = "Unlocked 🟢 (10 Videos Available)";
+                        courseStatusText.style.color = "#16a34a";
+                        buyCourseBtn.style.display = 'none';
+                        
+                        // Calculate Expiry (1 Year)
+                        const purchaseDate = new Date(data.purchaseDate);
+                        const expiryDate = new Date(purchaseDate);
+                        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+                        
+                        if (new Date() > expiryDate) {
+                            courseStatusText.innerText = "Expired ❌";
+                            courseStatusText.style.color = "#dc2626";
+                            expiryText.innerText = `Course expired on: ${expiryDate.toLocaleDateString()}`;
+                        } else {
+                            expiryText.innerText = `Valid up to: ${expiryDate.toLocaleDateString()}`;
+                        }
+                    }
+                }
+
+                // Copy Link Button
+                copyRefBtn.onclick = () => {
+                    navigator.clipboard.writeText(refLink);
+                    alert("Referral link copied to clipboard!");
+                };
+
+                // Mock Payment Flow for ₹199 & Commission Distribution
+                buyCourseBtn.onclick = async () => {
+                    const confirmPay = confirm("Pay ₹199 to unlock SkillHub Complete Course Bundle for 1 year?");
+                    if (!confirmPay) return;
+
+                    const now = new Date().toISOString();
+                    await updateDoc(userDocRef, {
+                        hasPurchased: true,
+                        purchaseDate: now
+                    });
+
+                    // Handle Referral Commission if referred by someone
+                    const userData = userSnap.data();
+                    if (userData.referredBy && userData.referredBy !== user.uid) {
+                        const referrerRef = doc(db, "users", userData.referredBy);
+                        const referrerSnap = await getDoc(referrerRef);
+                        if (referrerSnap.exists()) {
+                            await updateDoc(referrerRef, {
+                                successfulPurchases: increment(1),
+                                totalEarnings: increment(100) // ₹100 to Referrer
+                            });
+                        }
+                    }
+
+                    alert("Payment Successful! Course Unlocked for 1 Year 🎉");
+                    location.reload();
+                };
+
+            } else {
+                authNavButtons.style.display = 'flex';
+                userProfileNav.style.display = 'none';
+                heroSection.style.display = 'block';
+                dashboardSection.style.display = 'none';
+            }
+        });
+
+        logoutBtn.onclick = () => signOut(auth);
+    </script>
+</body>
+</html>
