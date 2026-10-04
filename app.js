@@ -1,14 +1,12 @@
 // =========================================================
 // SKILLHUB
-// Firebase Authentication + Referral System
+// Firebase Authentication + Referral + Razorpay Payment
 // =========================================================
 
-// Firebase App
 import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-// Firebase Authentication
 import {
     getAuth,
     RecaptchaVerifier,
@@ -22,7 +20,6 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-// Firebase Firestore
 import {
     getFirestore,
     doc,
@@ -35,49 +32,42 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-// Firebase config
 import {
     firebaseConfig
 } from "./firebase-config.js";
 
 
 // =========================================================
-// INITIALIZE FIREBASE
+// FIREBASE
 // =========================================================
 
-const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp =
+    initializeApp(firebaseConfig);
 
-const auth = getAuth(firebaseApp);
+const auth =
+    getAuth(firebaseApp);
 
-const db = getFirestore(firebaseApp);
+const db =
+    getFirestore(firebaseApp);
 
 
 // =========================================================
-// GLOBAL VARIABLES
+// SETTINGS
 // =========================================================
+
+const COURSE_PRICE = 199;
+
+let currentUser = null;
 
 let confirmationResult = null;
 
 let recaptchaVerifier = null;
 
-let currentUser = null;
-
 let authMode = "signup";
 
 
 // =========================================================
-// COURSE INFORMATION
-// =========================================================
-
-const COURSE_PRICE = 199;
-
-const REFERRAL_COMMISSION = 100;
-
-const COURSE_DURATION_DAYS = 365;
-
-
-// =========================================================
-// LESSON LIST
+// COURSE LESSONS
 // =========================================================
 
 const lessons = [
@@ -107,7 +97,7 @@ const lessons = [
         number: "04",
         title: "Understanding Customers",
         description:
-            "Learn why customers are important for every successful business."
+            "Learn why customers matter in every successful business."
     },
 
     {
@@ -135,7 +125,7 @@ const lessons = [
         number: "08",
         title: "Money Management",
         description:
-            "Learn basic principles of managing personal money."
+            "Learn basic principles of managing money."
     },
 
     {
@@ -156,24 +146,29 @@ const lessons = [
 
 
 // =========================================================
-// LOAD LESSONS
+// LOAD COURSE
 // =========================================================
 
-function loadLessons() {
+function loadLessons(courseActive = false) {
 
     const courseGrid =
         document.querySelector(".course-grid");
 
     if (!courseGrid) return;
 
+
     courseGrid.innerHTML = "";
+
 
     lessons.forEach((lesson) => {
 
         const card =
             document.createElement("div");
 
-        card.className = "course-card";
+
+        card.className =
+            "course-card";
+
 
         card.innerHTML = `
 
@@ -186,10 +181,14 @@ function loadLessons() {
             </h3>
 
             <p>
-                ${lesson.description}
+                ${courseActive
+                    ? "Course unlocked • Video will be added later"
+                    : "🔒 Locked • Purchase required"
+                }
             </p>
 
         `;
+
 
         courseGrid.appendChild(card);
 
@@ -199,19 +198,19 @@ function loadLessons() {
 
 
 // =========================================================
-// REFERRAL CODE GENERATOR
-// =========================================================
-//
-// Example:
-// SH7K92AB
+// REFERRAL CODE
 // =========================================================
 
 function generateReferralCode(uid) {
 
     const cleanUID =
         uid
-            .replace(/[^a-zA-Z0-9]/g, "")
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
             .toUpperCase();
+
 
     return "SH" +
         cleanUID.substring(0, 8);
@@ -220,12 +219,7 @@ function generateReferralCode(uid) {
 
 
 // =========================================================
-// GET REFERRAL FROM URL
-// =========================================================
-//
-// Example:
-//
-// yourwebsite.com/?ref=SHABC123
+// URL REFERRAL
 // =========================================================
 
 function getReferralFromURL() {
@@ -235,27 +229,31 @@ function getReferralFromURL() {
             window.location.search
         );
 
-    const referralCode =
+
+    const ref =
         params.get("ref");
 
-    if (referralCode) {
+
+    if (ref) {
 
         localStorage.setItem(
             "skillhubReferralCode",
-            referralCode
+            ref.toUpperCase()
         );
 
     }
 
-    return referralCode;
+
+    return ref;
+
 }
 
 
 // =========================================================
-// LOAD SAVED REFERRAL
+// SAVED REFERRAL
 // =========================================================
 
-function getSavedReferralCode() {
+function getSavedReferral() {
 
     return localStorage.getItem(
         "skillhubReferralCode"
@@ -265,25 +263,28 @@ function getSavedReferralCode() {
 
 
 // =========================================================
-// PUT REFERRAL CODE INTO SIGNUP FIELD
+// REFERRAL INPUT
 // =========================================================
 
-function loadReferralIntoForm() {
+function loadReferralInput() {
 
-    const referralInput =
+    const input =
         document.getElementById(
             "referralInput"
         );
 
-    if (!referralInput) return;
 
-    const referralCode =
-        getSavedReferralCode();
+    if (!input) return;
 
-    if (referralCode) {
 
-        referralInput.value =
-            referralCode;
+    const ref =
+        getSavedReferral();
+
+
+    if (ref) {
+
+        input.value =
+            ref;
 
     }
 
@@ -291,77 +292,99 @@ function loadReferralIntoForm() {
 
 
 // =========================================================
-// OPEN AUTH MODAL
+// OPEN AUTH
 // =========================================================
 
-window.openAuth = function(mode) {
+window.openAuth =
+    function(mode = "signup") {
 
-    authMode = mode;
+        authMode =
+            mode;
 
-    const modal =
-        document.getElementById(
-            "authModal"
+
+        const modal =
+            document.getElementById(
+                "authModal"
+            );
+
+
+        if (!modal) return;
+
+
+        modal.classList.remove(
+            "hidden"
         );
 
-    if (!modal) return;
 
-    modal.classList.remove("hidden");
+        updateAuthMode();
 
-    updateAuthMode();
-
-    loadReferralIntoForm();
-
-    if (mode === "signup") {
-
-        setupRecaptcha();
-
-    }
-
-};
+        loadReferralInput();
 
 
-// =========================================================
-// CLOSE AUTH MODAL
-// =========================================================
+        if (
+            authMode === "signup"
+        ) {
 
-window.closeAuth = function() {
+            setupRecaptcha();
 
-    const modal =
-        document.getElementById(
-            "authModal"
-        );
+        }
 
-    if (!modal) return;
-
-    modal.classList.add("hidden");
-
-};
+    };
 
 
 // =========================================================
-// SWITCH LOGIN / SIGNUP
+// CLOSE AUTH
 // =========================================================
 
-window.switchAuthMode = function() {
+window.closeAuth =
+    function() {
 
-    authMode =
-        authMode === "signup"
-            ? "login"
-            : "signup";
+        const modal =
+            document.getElementById(
+                "authModal"
+            );
 
-    updateAuthMode();
 
-    if (authMode === "signup") {
+        if (modal) {
 
-        setupRecaptcha();
+            modal.classList.add(
+                "hidden"
+            );
 
-    }
+        }
 
-};
+    };
 
 
 // =========================================================
-// UPDATE AUTH UI
+// SWITCH AUTH MODE
+// =========================================================
+
+window.switchAuthMode =
+    function() {
+
+        authMode =
+            authMode === "signup"
+                ? "login"
+                : "signup";
+
+
+        updateAuthMode();
+
+
+        if (
+            authMode === "signup"
+        ) {
+
+            setupRecaptcha();
+
+        }
+
+    };
+
+
+// =========================================================
+// AUTH UI
 // =========================================================
 
 function updateAuthMode() {
@@ -371,20 +394,24 @@ function updateAuthMode() {
             "signupForm"
         );
 
+
     const loginForm =
         document.getElementById(
             "loginForm"
         );
+
 
     const title =
         document.getElementById(
             "authTitle"
         );
 
+
     const switchText =
         document.getElementById(
             "authSwitchText"
         );
+
 
     const switchButton =
         document.getElementById(
@@ -398,27 +425,38 @@ function updateAuthMode() {
         !title ||
         !switchText ||
         !switchButton
-    ) return;
+    ) {
+
+        return;
+
+    }
 
 
-    if (authMode === "signup") {
+    if (
+        authMode === "signup"
+    ) {
 
         signupForm.classList.remove(
             "hidden"
         );
 
+
         loginForm.classList.add(
             "hidden"
         );
 
+
         title.textContent =
             "Create your account";
+
 
         switchText.textContent =
             "Already have an account?";
 
+
         switchButton.textContent =
             "Log in";
+
 
     } else {
 
@@ -426,15 +464,19 @@ function updateAuthMode() {
             "hidden"
         );
 
+
         loginForm.classList.remove(
             "hidden"
         );
 
+
         title.textContent =
             "Welcome back";
 
+
         switchText.textContent =
             "Don't have an account?";
+
 
         switchButton.textContent =
             "Sign Up";
@@ -445,48 +487,29 @@ function updateAuthMode() {
 
 
 // =========================================================
-// AUTH MESSAGE
+// MESSAGE
 // =========================================================
 
 function showMessage(message) {
 
-    const box =
+    const element =
         document.getElementById(
             "authMessage"
         );
 
-    if (!box) return;
 
-    box.textContent =
-        message;
+    if (element) {
+
+        element.textContent =
+            message;
+
+    }
 
 }
 
 
 // =========================================================
-// CLEAR AUTH MESSAGE
-// =========================================================
-
-function clearMessage() {
-
-    const box =
-        document.getElementById(
-            "authMessage"
-        );
-
-    if (!box) return;
-
-    box.textContent = "";
-
-}
-
-
-// =========================================================
-// SETUP RECAPTCHA
-// =========================================================
-//
-// Firebase Phone Auth on web requires
-// reCAPTCHA verification.
+// RECAPTCHA
 // =========================================================
 
 async function setupRecaptcha() {
@@ -496,11 +519,13 @@ async function setupRecaptcha() {
             "recaptcha-container"
         );
 
+
     if (!container) return;
 
 
-    // Already initialized
-    if (recaptchaVerifier) {
+    if (
+        recaptchaVerifier
+    ) {
 
         return;
 
@@ -517,28 +542,28 @@ async function setupRecaptcha() {
 
                     size: "normal",
 
-                    callback: function() {
+                    callback() {
 
                         console.log(
-                            "reCAPTCHA completed."
+                            "reCAPTCHA verified."
                         );
 
                     },
 
-                    "expired-callback":
-                        function() {
+                    "expired-callback"() {
 
-                            console.log(
-                                "reCAPTCHA expired."
-                            );
+                        console.log(
+                            "reCAPTCHA expired."
+                        );
 
-                        }
+                    }
 
                 }
             );
 
 
         await recaptchaVerifier.render();
+
 
     } catch (error) {
 
@@ -560,31 +585,24 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        const sendOtpButton =
+        const button =
             document.getElementById(
                 "sendOtpButton"
             );
 
 
-        if (
-            !sendOtpButton
-        ) return;
+        if (!button) return;
 
 
-        sendOtpButton.addEventListener(
+        button.addEventListener(
             "click",
             async function() {
 
-                clearMessage();
-
-
-                const phoneInput =
-                    document.getElementById(
-                        "phone"
-                    );
-
                 const phone =
-                    phoneInput
+                    document
+                        .getElementById(
+                            "phone"
+                        )
                         ?.value
                         .trim();
 
@@ -605,7 +623,7 @@ document.addEventListener(
                 ) {
 
                     showMessage(
-                        "Please use country code. Example: +919876543210"
+                        "Use country code. Example: +919876543210"
                     );
 
                     return;
@@ -615,10 +633,10 @@ document.addEventListener(
 
                 try {
 
-                    sendOtpButton.disabled =
+                    button.disabled =
                         true;
 
-                    sendOtpButton.textContent =
+                    button.textContent =
                         "Sending OTP...";
 
 
@@ -633,23 +651,18 @@ document.addEventListener(
                         );
 
 
-                    const otpSection =
-                        document.getElementById(
+                    document
+                        .getElementById(
                             "otpSection"
-                        );
-
-
-                    if (otpSection) {
-
-                        otpSection.classList.remove(
+                        )
+                        ?.classList
+                        .remove(
                             "hidden"
                         );
 
-                    }
-
 
                     showMessage(
-                        "OTP sent successfully. Check your mobile."
+                        "OTP sent successfully."
                     );
 
 
@@ -661,21 +674,17 @@ document.addEventListener(
 
 
                     showMessage(
-                        getFirebaseErrorMessage(
+                        firebaseError(
                             error
                         )
                     );
 
-
-                    resetRecaptcha();
-
-
                 } finally {
 
-                    sendOtpButton.disabled =
+                    button.disabled =
                         false;
 
-                    sendOtpButton.textContent =
+                    button.textContent =
                         "Send OTP";
 
                 }
@@ -688,87 +697,25 @@ document.addEventListener(
 
 
 // =========================================================
-// RESET RECAPTCHA
-// =========================================================
-
-function resetRecaptcha() {
-
-    if (!recaptchaVerifier) return;
-
-
-    try {
-
-        recaptchaVerifier.clear();
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-
-
-    recaptchaVerifier =
-        null;
-
-
-    setTimeout(
-        function() {
-
-            setupRecaptcha();
-
-        },
-        500
-    );
-
-}
-
-
-// =========================================================
-// VERIFY OTP
+// VERIFY OTP + CREATE USER
 // =========================================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        const verifyOtpButton =
+        const button =
             document.getElementById(
                 "verifyOtpButton"
             );
 
 
-        if (!verifyOtpButton)
-            return;
+        if (!button) return;
 
 
-        verifyOtpButton.addEventListener(
+        button.addEventListener(
             "click",
             async function() {
-
-                clearMessage();
-
-
-                if (
-                    !confirmationResult
-                ) {
-
-                    showMessage(
-                        "Please request the OTP first."
-                    );
-
-                    return;
-
-                }
-
-
-                const otp =
-                    document
-                        .getElementById(
-                            "otp"
-                        )
-                        ?.value
-                        .trim();
-
 
                 const fullName =
                     document
@@ -794,6 +741,15 @@ document.addEventListener(
                             "password"
                         )
                         ?.value;
+
+
+                const otp =
+                    document
+                        .getElementById(
+                            "otp"
+                        )
+                        ?.value
+                        .trim();
 
 
                 const referralCode =
@@ -833,7 +789,7 @@ document.addEventListener(
                 ) {
 
                     showMessage(
-                        "Password must be at least 6 characters."
+                        "Password must contain at least 6 characters."
                     );
 
                     return;
@@ -852,16 +808,30 @@ document.addEventListener(
                 }
 
 
+                if (
+                    !confirmationResult
+                ) {
+
+                    showMessage(
+                        "Please request OTP first."
+                    );
+
+                    return;
+
+                }
+
+
                 try {
 
-                    verifyOtpButton.disabled =
+                    button.disabled =
                         true;
 
-                    verifyOtpButton.textContent =
+                    button.textContent =
                         "Verifying...";
 
 
-                    // Verify phone OTP
+                    // Verify OTP
+
                     const result =
                         await confirmationResult.confirm(
                             otp
@@ -872,11 +842,9 @@ document.addEventListener(
                         result.user;
 
 
-                    // ---------------------------------
-                    // LINK EMAIL + PASSWORD
-                    // ---------------------------------
+                    // Email + password
 
-                    const credential =
+                    const emailCredential =
                         EmailAuthProvider.credential(
                             email,
                             password
@@ -887,33 +855,24 @@ document.addEventListener(
 
                         await linkWithCredential(
                             user,
-                            credential
+                            emailCredential
                         );
 
-                    } catch (linkError) {
+                    } catch (error) {
 
-                        console.error(
-                            "Email linking error:",
-                            linkError
-                        );
-
-
-                        // If email already linked
                         if (
-                            linkError.code !==
+                            error.code !==
                             "auth/provider-already-linked"
                         ) {
 
-                            throw linkError;
+                            throw error;
 
                         }
 
                     }
 
 
-                    // ---------------------------------
-                    // UPDATE PROFILE
-                    // ---------------------------------
+                    // User name
 
                     await updateProfile(
                         user,
@@ -924,18 +883,14 @@ document.addEventListener(
                     );
 
 
-                    // ---------------------------------
-                    // SEND EMAIL VERIFICATION
-                    // ---------------------------------
+                    // Email verification
 
                     await sendEmailVerification(
                         user
                     );
 
 
-                    // ---------------------------------
-                    // CREATE REFERRAL CODE
-                    // ---------------------------------
+                    // Referral code
 
                     const myReferralCode =
                         generateReferralCode(
@@ -943,9 +898,7 @@ document.addEventListener(
                         );
 
 
-                    // ---------------------------------
-                    // SAVE USER
-                    // ---------------------------------
+                    // Firestore user
 
                     await setDoc(
 
@@ -1009,17 +962,15 @@ document.addEventListener(
                         },
 
                         {
-                            merge: true
+                            merge:
+                                true
                         }
 
                     );
 
 
-                    // Save referral code
-                    // locally for convenience
-                    localStorage.setItem(
-                        "skillhubMyReferralCode",
-                        myReferralCode
+                    localStorage.removeItem(
+                        "skillhubReferralCode"
                     );
 
 
@@ -1029,9 +980,9 @@ document.addEventListener(
 
 
                     setTimeout(
-                        function() {
+                        () => {
 
-                            closeAuth();
+                            window.closeAuth();
 
                         },
                         1500
@@ -1046,7 +997,7 @@ document.addEventListener(
 
 
                     showMessage(
-                        getFirebaseErrorMessage(
+                        firebaseError(
                             error
                         )
                     );
@@ -1054,10 +1005,10 @@ document.addEventListener(
 
                 } finally {
 
-                    verifyOtpButton.disabled =
+                    button.disabled =
                         false;
 
-                    verifyOtpButton.textContent =
+                    button.textContent =
                         "Verify & Create Account";
 
                 }
@@ -1077,22 +1028,18 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        const loginButton =
+        const button =
             document.getElementById(
                 "loginButton"
             );
 
 
-        if (!loginButton)
-            return;
+        if (!button) return;
 
 
-        loginButton.addEventListener(
+        button.addEventListener(
             "click",
             async function() {
-
-                clearMessage();
-
 
                 const email =
                     document
@@ -1135,10 +1082,10 @@ document.addEventListener(
 
                 try {
 
-                    loginButton.disabled =
+                    button.disabled =
                         true;
 
-                    loginButton.textContent =
+                    button.textContent =
                         "Logging in...";
 
 
@@ -1149,29 +1096,23 @@ document.addEventListener(
                     );
 
 
-                    closeAuth();
+                    window.closeAuth();
 
 
                 } catch (error) {
 
-                    console.error(
-                        error
-                    );
-
-
                     showMessage(
-                        getFirebaseErrorMessage(
+                        firebaseError(
                             error
                         )
                     );
 
-
                 } finally {
 
-                    loginButton.disabled =
+                    button.disabled =
                         false;
 
-                    loginButton.textContent =
+                    button.textContent =
                         "Log in";
 
                 }
@@ -1205,68 +1146,65 @@ onAuthStateChanged(
             return;
 
 
-        if (user) {
-
-            dashboard.classList.remove(
-                "hidden"
-            );
-
-
-            await loadUserDashboard(
-                user
-            );
-
-
-        } else {
+        if (!user) {
 
             dashboard.classList.add(
                 "hidden"
             );
 
-        }
 
-    }
-);
-
-
-// =========================================================
-// LOAD USER DASHBOARD
-// =========================================================
-
-async function loadUserDashboard(
-    user
-) {
-
-    try {
-
-        const userRef =
-            doc(
-                db,
-                "users",
-                user.uid
+            loadLessons(
+                false
             );
 
-
-        const userSnapshot =
-            await getDoc(
-                userRef
-            );
-
-
-        if (!userSnapshot.exists()) {
 
             return;
 
         }
 
 
+        dashboard.classList.remove(
+            "hidden"
+        );
+
+
+        await loadDashboard(
+            user
+        );
+
+    }
+);
+
+
+// =========================================================
+// LOAD DASHBOARD
+// =========================================================
+
+async function loadDashboard(
+    user
+) {
+
+    try {
+
+        const snapshot =
+            await getDoc(
+                doc(
+                    db,
+                    "users",
+                    user.uid
+                )
+            );
+
+
+        if (!snapshot.exists())
+            return;
+
+
         const data =
-            userSnapshot.data();
+            snapshot.data();
 
 
-        // ---------------------------------
         // Welcome
-        // ---------------------------------
 
         const welcome =
             document.getElementById(
@@ -1282,9 +1220,7 @@ async function loadUserDashboard(
         }
 
 
-        // ---------------------------------
         // Referral code
-        // ---------------------------------
 
         const referralCode =
             data.referralCode ||
@@ -1293,45 +1229,43 @@ async function loadUserDashboard(
             );
 
 
-        const referralElement =
-            document.getElementById(
+        document
+            .getElementById(
                 "referralCode"
+            )
+            ?.replaceChildren(
+                document.createTextNode(
+                    referralCode
+                )
             );
 
 
-        const dashboardReferral =
-            document.getElementById(
+        document
+            .getElementById(
                 "dashboardReferralCode"
+            )
+            ?.replaceChildren(
+                document.createTextNode(
+                    referralCode
+                )
             );
 
 
-        if (referralElement) {
-
-            referralElement.textContent =
-                referralCode;
-
-        }
-
-
-        if (dashboardReferral) {
-
-            dashboardReferral.textContent =
-                referralCode;
-
-        }
-
-
-        // ---------------------------------
         // Earnings
-        // ---------------------------------
 
-        const totalEarnings =
+        const earnings =
             Number(
                 data.totalEarnings || 0
             );
 
 
-        const earningsElement =
+        const earningsText =
+            formatCurrency(
+                earnings
+            );
+
+
+        const totalEarnings =
             document.getElementById(
                 "totalEarnings"
             );
@@ -1343,12 +1277,10 @@ async function loadUserDashboard(
             );
 
 
-        if (earningsElement) {
+        if (totalEarnings) {
 
-            earningsElement.textContent =
-                formatCurrency(
-                    totalEarnings
-                );
+            totalEarnings.textContent =
+                earningsText;
 
         }
 
@@ -1356,28 +1288,36 @@ async function loadUserDashboard(
         if (dashboardEarnings) {
 
             dashboardEarnings.textContent =
-                formatCurrency(
-                    totalEarnings
-                );
+                earningsText;
 
         }
 
 
-        // ---------------------------------
-        // Referral stats
-        // ---------------------------------
+        // Course status
 
-        await loadReferralStats(
-            user.uid
+        const active =
+            isCourseActive(
+                data
+            );
+
+
+        updateCourseUI(
+            data,
+            active
         );
 
 
-        // ---------------------------------
-        // Course status
-        // ---------------------------------
+        // Course cards
 
-        updateCourseStatus(
-            data
+        loadLessons(
+            active
+        );
+
+
+        // Referral statistics
+
+        await loadReferralStats(
+            user.uid
         );
 
 
@@ -1394,11 +1334,50 @@ async function loadUserDashboard(
 
 
 // =========================================================
-// COURSE STATUS
+// COURSE ACTIVE CHECK
 // =========================================================
 
-function updateCourseStatus(
+function isCourseActive(
     data
+) {
+
+    if (
+        data.courseActive !== true
+    ) {
+
+        return false;
+
+    }
+
+
+    if (!data.expiryDate) {
+
+        return false;
+
+    }
+
+
+    const expiry =
+        new Date(
+            data.expiryDate
+        );
+
+
+    return (
+        expiry.getTime() >
+        Date.now()
+    );
+
+}
+
+
+// =========================================================
+// COURSE UI
+// =========================================================
+
+function updateCourseUI(
+    data,
+    active
 ) {
 
     const status =
@@ -1407,103 +1386,76 @@ function updateCourseStatus(
         );
 
 
-    const expiryText =
+    const expiry =
         document.getElementById(
             "courseExpiry"
         );
 
 
-    const purchaseButton =
+    const button =
         document.getElementById(
             "purchaseCourseButton"
         );
 
 
-    if (
-        !status ||
-        !expiryText
-    ) return;
-
-
-    let active =
-        data.courseActive === true;
-
-
-    let expiryDate =
-        null;
-
-
-    if (data.expiryDate) {
-
-        expiryDate =
-            new Date(
-                data.expiryDate
-            );
-
-        if (
-            expiryDate <=
-            new Date()
-        ) {
-
-            active =
-                false;
-
-        }
-
-    }
-
-
     if (active) {
 
-        status.textContent =
-            "Active";
+        if (status) {
 
-        status.style.color =
-            "#087bf5";
+            status.textContent =
+                "Active";
 
-
-        if (expiryDate) {
-
-            expiryText.textContent =
-                `Your course access is active until ${formatDate(expiryDate)}.`;
-
-        } else {
-
-            expiryText.textContent =
-                "Your course access is active.";
+            status.style.color =
+                "#087bf5";
 
         }
 
 
-        if (purchaseButton) {
+        if (expiry) {
 
-            purchaseButton.textContent =
+            expiry.textContent =
+                `Access available until ${formatDate(new Date(data.expiryDate))}.`;
+
+        }
+
+
+        if (button) {
+
+            button.textContent =
                 "Course Unlocked";
 
-            purchaseButton.disabled =
+            button.disabled =
                 true;
 
         }
 
     } else {
 
-        status.textContent =
-            "Locked";
+        if (status) {
 
-        status.style.color =
-            "#d14343";
+            status.textContent =
+                "Locked";
+
+            status.style.color =
+                "#d14343";
+
+        }
 
 
-        expiryText.textContent =
-            "Purchase the course to unlock your lessons.";
+        if (expiry) {
+
+            expiry.textContent =
+                "Purchase the course to unlock your lessons.";
+
+        }
 
 
-        if (purchaseButton) {
+        if (button) {
 
-            purchaseButton.textContent =
+            button.textContent =
                 `Buy Course — ₹${COURSE_PRICE}`;
 
-            purchaseButton.disabled =
+            button.disabled =
                 false;
 
         }
@@ -1514,7 +1466,7 @@ function updateCourseStatus(
 
 
 // =========================================================
-// LOAD REFERRAL STATS
+// REFERRAL STATS
 // =========================================================
 
 async function loadReferralStats(
@@ -1523,16 +1475,13 @@ async function loadReferralStats(
 
     try {
 
-        const referralsRef =
-            collection(
-                db,
-                "referrals"
-            );
-
-
-        const referralQuery =
+        const q =
             query(
-                referralsRef,
+                collection(
+                    db,
+                    "referrals"
+                ),
+
                 where(
                     "referrerId",
                     "==",
@@ -1542,9 +1491,7 @@ async function loadReferralStats(
 
 
         const snapshot =
-            await getDocs(
-                referralQuery
-            );
+            await getDocs(q);
 
 
         let total =
@@ -1558,10 +1505,10 @@ async function loadReferralStats(
 
 
         snapshot.forEach(
-            function(docSnapshot) {
+            function(item) {
 
                 const data =
-                    docSnapshot.data();
+                    item.data();
 
 
                 total++;
@@ -1569,8 +1516,7 @@ async function loadReferralStats(
 
                 if (
                     data.status ===
-                    "available"
-                    ||
+                    "available" ||
                     data.status ===
                     "paid"
                 ) {
@@ -1639,6 +1585,7 @@ async function loadReferralStats(
 
         }
 
+
     } catch (error) {
 
         console.error(
@@ -1652,7 +1599,352 @@ async function loadReferralStats(
 
 
 // =========================================================
-// COPY REFERRAL LINK
+// BUY COURSE
+// =========================================================
+
+async function buyCourse() {
+
+    if (!currentUser) {
+
+        window.openAuth(
+            "login"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        // Refresh user
+        await currentUser.reload();
+
+
+        if (
+            !currentUser.emailVerified
+        ) {
+
+            alert(
+                "Please verify your email before purchasing the course."
+            );
+
+            return;
+
+        }
+
+
+        const token =
+            await currentUser.getIdToken(
+                true
+            );
+
+
+        const referralCode =
+            getSavedReferral();
+
+
+        // ---------------------------------
+        // CREATE RAZORPAY ORDER
+        // ---------------------------------
+
+        const response =
+            await fetch(
+                "/api/create-order",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            referralCode:
+                                referralCode ||
+                                null
+
+                        })
+
+                }
+            );
+
+
+        const orderData =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                orderData.error ||
+                "Unable to create payment order."
+            );
+
+        }
+
+
+        // ---------------------------------
+        // RAZORPAY CHECKOUT
+        // ---------------------------------
+
+        const options = {
+
+            key:
+                orderData.key,
+
+            amount:
+                orderData.amount,
+
+            currency:
+                "INR",
+
+            name:
+                "SkillHub",
+
+            description:
+                "SkillHub Course — 1 Year Access",
+
+            order_id:
+                orderData.orderId,
+
+            prefill: {
+
+                name:
+                    currentUser.displayName ||
+                    "",
+
+                email:
+                    currentUser.email ||
+                    "",
+
+                contact:
+                    currentUser.phoneNumber ||
+                    ""
+
+            },
+
+            theme: {
+
+                color:
+                    "#087bf5"
+
+            },
+
+
+            handler:
+                async function(payment) {
+
+                    await verifyPayment(
+                        payment,
+                        token
+                    );
+
+                },
+
+
+            modal: {
+
+                ondismiss:
+                    function() {
+
+                        console.log(
+                            "Payment popup closed."
+                        );
+
+                    }
+
+            }
+
+        };
+
+
+        if (
+            typeof Razorpay ===
+            "undefined"
+        ) {
+
+            throw new Error(
+                "Razorpay Checkout could not load."
+            );
+
+        }
+
+
+        const razorpay =
+            new Razorpay(
+                options
+            );
+
+
+        razorpay.on(
+            "payment.failed",
+            function(response) {
+
+                console.error(
+                    "Payment failed:",
+                    response
+                );
+
+
+                alert(
+                    "Payment failed. Please try again."
+                );
+
+            }
+        );
+
+
+        razorpay.open();
+
+
+    } catch (error) {
+
+        console.error(
+            "Purchase error:",
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+// =========================================================
+// VERIFY PAYMENT
+// =========================================================
+
+async function verifyPayment(
+    payment,
+    token
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/verify-payment",
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            razorpay_order_id:
+                                payment.razorpay_order_id,
+
+                            razorpay_payment_id:
+                                payment.razorpay_payment_id,
+
+                            razorpay_signature:
+                                payment.razorpay_signature
+
+                        })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.error ||
+                "Payment verification failed."
+            );
+
+        }
+
+
+        alert(
+            "Payment successful! Your SkillHub course is now unlocked for 1 year."
+        );
+
+
+        // Remove referral from this browser
+        localStorage.removeItem(
+            "skillhubReferralCode"
+        );
+
+
+        window.location.reload();
+
+
+    } catch (error) {
+
+        console.error(
+            "Verification error:",
+            error
+        );
+
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+// =========================================================
+// BUY BUTTON
+// =========================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const button =
+            document.getElementById(
+                "purchaseCourseButton"
+            );
+
+
+        if (!button)
+            return;
+
+
+        button.addEventListener(
+            "click",
+            buyCourse
+        );
+
+    }
+);
+
+
+// =========================================================
+// REFERRAL LINK
 // =========================================================
 
 window.copyReferralLink =
@@ -1660,7 +1952,7 @@ window.copyReferralLink =
 
         if (!currentUser) {
 
-            openAuth(
+            window.openAuth(
                 "signup"
             );
 
@@ -1671,7 +1963,7 @@ window.copyReferralLink =
 
         try {
 
-            const userSnapshot =
+            const snapshot =
                 await getDoc(
                     doc(
                         db,
@@ -1681,27 +1973,10 @@ window.copyReferralLink =
                 );
 
 
-            if (
-                !userSnapshot.exists()
-            ) {
-
-                return;
-
-            }
-
-
-            const data =
-                userSnapshot.data();
-
-
-            const referralCode =
-                data.referralCode;
-
-
-            if (!referralCode) {
+            if (!snapshot.exists()) {
 
                 alert(
-                    "Referral code is not available yet."
+                    "User profile not found."
                 );
 
                 return;
@@ -1709,12 +1984,31 @@ window.copyReferralLink =
             }
 
 
-            const referralLink =
-                `${window.location.origin}/?ref=${encodeURIComponent(referralCode)}`;
+            const data =
+                snapshot.data();
+
+
+            const code =
+                data.referralCode;
+
+
+            if (!code) {
+
+                alert(
+                    "Referral code not available."
+                );
+
+                return;
+
+            }
+
+
+            const link =
+                `${window.location.origin}/?ref=${encodeURIComponent(code)}`;
 
 
             await navigator.clipboard.writeText(
-                referralLink
+                link
             );
 
 
@@ -1753,9 +2047,7 @@ window.logoutUser =
             );
 
 
-            alert(
-                "You have been logged out."
-            );
+            window.location.reload();
 
 
         } catch (error) {
@@ -1770,85 +2062,7 @@ window.logoutUser =
 
 
 // =========================================================
-// PURCHASE BUTTON
-// =========================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        const purchaseButton =
-            document.getElementById(
-                "purchaseCourseButton"
-            );
-
-
-        if (!purchaseButton)
-            return;
-
-
-        purchaseButton.addEventListener(
-            "click",
-            async function() {
-
-                if (!currentUser) {
-
-                    openAuth(
-                        "login"
-                    );
-
-                    return;
-
-                }
-
-
-                // Email verification
-                // will be required before payment.
-
-                await currentUser.reload();
-
-
-                if (
-                    !currentUser.emailVerified
-                ) {
-
-                    alert(
-                        "Please verify your email before purchasing the course."
-                    );
-
-                    return;
-
-                }
-
-
-                alert(
-                    "Payment gateway will be connected in Step 4."
-                );
-
-            }
-        );
-
-    }
-);
-
-
-// =========================================================
-// FORMAT CURRENCY
-// =========================================================
-
-function formatCurrency(
-    amount
-) {
-
-    return "₹" +
-        Number(amount || 0)
-            .toLocaleString("en-IN");
-
-}
-
-
-// =========================================================
-// FORMAT DATE
+// DATE
 // =========================================================
 
 function formatDate(
@@ -1858,9 +2072,16 @@ function formatDate(
     return date.toLocaleDateString(
         "en-IN",
         {
-            day: "2-digit",
-            month: "long",
-            year: "numeric"
+
+            day:
+                "2-digit",
+
+            month:
+                "long",
+
+            year:
+                "numeric"
+
         }
     );
 
@@ -1868,41 +2089,55 @@ function formatDate(
 
 
 // =========================================================
-// FIREBASE ERROR HANDLER
+// CURRENCY
 // =========================================================
 
-function getFirebaseErrorMessage(
+function formatCurrency(
+    amount
+) {
+
+    return (
+        "₹" +
+        Number(amount || 0)
+            .toLocaleString("en-IN")
+    );
+
+}
+
+
+// =========================================================
+// FIREBASE ERROR
+// =========================================================
+
+function firebaseError(
     error
 ) {
 
-    if (!error)
-        return "Something went wrong.";
-
-
     const code =
-        error.code || "";
+        error?.code ||
+        "";
 
 
     switch (code) {
 
         case "auth/invalid-phone-number":
 
-            return "Invalid mobile number. Use +91 followed by your number.";
+            return "Invalid mobile number.";
 
 
         case "auth/too-many-requests":
 
-            return "Too many attempts. Please try again later.";
+            return "Too many attempts. Please try later.";
 
 
         case "auth/invalid-verification-code":
 
-            return "Invalid OTP. Please check the code.";
+            return "Invalid OTP.";
 
 
         case "auth/code-expired":
 
-            return "OTP has expired. Please request a new OTP.";
+            return "OTP expired. Request a new OTP.";
 
 
         case "auth/email-already-in-use":
@@ -1912,12 +2147,12 @@ function getFirebaseErrorMessage(
 
         case "auth/invalid-email":
 
-            return "Please enter a valid email address.";
+            return "Please enter a valid email.";
 
 
         case "auth/weak-password":
 
-            return "Password is too weak. Use at least 6 characters.";
+            return "Password should contain at least 6 characters.";
 
 
         case "auth/invalid-credential":
@@ -1925,36 +2160,11 @@ function getFirebaseErrorMessage(
             return "Incorrect email or password.";
 
 
-        case "auth/user-not-found":
-
-            return "No account found with this email.";
-
-
-        case "auth/wrong-password":
-
-            return "Incorrect password.";
-
-
-        case "auth/provider-already-linked":
-
-            return "This account is already connected with email/password.";
-
-
-        case "auth/account-exists-with-different-credential":
-
-            return "An account already exists with this information.";
-
-
-        case "auth/operation-not-allowed":
-
-            return "This Firebase authentication method is not enabled.";
-
-
         default:
 
             return (
-                error.message ||
-                "Something went wrong. Please try again."
+                error?.message ||
+                "Something went wrong."
             );
 
     }
@@ -1963,27 +2173,18 @@ function getFirebaseErrorMessage(
 
 
 // =========================================================
-// INITIAL PAGE SETUP
+// START
 // =========================================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        loadLessons();
+        loadLessons(false);
 
         getReferralFromURL();
 
-        loadReferralIntoForm();
+        loadReferralInput();
 
     }
-);
-
-
-// =========================================================
-// DEBUG
-// =========================================================
-
-console.log(
-    "SkillHub Firebase initialized successfully."
 );
