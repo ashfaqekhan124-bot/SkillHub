@@ -1,135 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-          content="SkillHub - Learn practical skills, grow your knowledge and unlock new earning opportunities.">
+    <meta
+        name="description"
+        content="SkillHub - Learn practical skills, grow your knowledge and unlock new earning opportunities.">
 
     <title>SkillHub — Learn. Grow. Earn.</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
+
 </head>
+
 
 <body>
 
-    <!-- =========================
+
+    <!-- =====================================================
          NAVIGATION
-    ========================== -->
+    ====================================================== -->
 
     <header class="navbar">
 
         <div class="nav-container">
 
-            <!-- Logo -->
-            <a href="#home" class="logo">
-                <div class="logo-icon">S</div>
-                <span>Skill<span class="logo-blue">Hub</span></span>
+
+            <!-- LOGO -->
+
+            <a
+                href="#home"
+                class="logo">
+
+                <div class="logo-icon">
+                    S
+                </div>
+
+                <span>
+                    Skill<span class="logo-blue">Hub</span>
+                </span>
+
             </a>
 
-            <!-- Desktop Navigation -->
+
+            <!-- DESKTOP NAVIGATION -->
+
             <nav class="nav-links">
 
-                <a href="#home">Home</a>
+                <a href="#home">
+                    Home
+                </a>
 
-                <a href="#course">Course</a>
+                <a href="#course">
+                    Course
+                </a>
 
-                <a href="#referral">Referral</a>
+                <a href="#referral">
+                    Referral
+                </a>
 
-                <a href="#about">About</a>
+                <a href="#about">
+                    About
+                </a>
 
             </nav>
 
-            <!-- Navigation Buttons -->
+
+            <!-- NAVIGATION BUTTONS -->
+
             <div class="nav-buttons">
 
                 <button
                     class="login-btn"
                     onclick="openAuth('login')">
+
                     Log in
+
                 </button>
+
 
                 <button
                     class="signup-btn"
                     onclick="openAuth('signup')">
+
                     Sign Up
+
                 </button>
 
             </div>
 
-            <!-- Mobile Menu -->
+
+            <!-- MOBILE MENU BUTTON -->
+
             <button
                 class="mobile-menu-btn"
                 onclick="toggleMobileMenu()">
+
                 ☰
+
             </button>
 
         </div>
 
-        <!-- Mobile Navigation -->
+
+        <!-- MOBILE MENU -->
 
         <div
             id="mobileMenu"
             class="mobile-menu">
 
-            <a href="#home" onclick="closeMobileMenu()">Home</a>
 
-            <a href="#course" onclick="closeMobileMenu()">Course</a>
+            <a
+                href="#home"
+                onclick="closeMobileMenu()">
 
-            <a href="#referral" onclick="closeMobileMenu()">Referral</a>
+                Home
 
-            <a href="#about" onclick="closeMobileMenu()">About</a>
+            </a>
+
+
+            <a
+                href="#course"
+                onclick="closeMobileMenu()">
+
+                Course
+
+            </a>
+
+
+            <a
+                href="#referral"
+                onclick="closeMobileMenu()">
+
+                Referral
+
+            </a>
+
+
+            <a
+                href="#about"
+                onclick="closeMobileMenu()">
+
+                About
+
+            </a>
+
 
             <button
                 onclick="openAuth('login'); closeMobileMenu();">
+
                 Log in
+
             </button>
+
 
             <button
                 onclick="openAuth('signup'); closeMobileMenu();">
+
                 Sign Up
+
             </button>
+
 
         </div>
 
     </header>
 
 
-    <!-- =========================
-         HERO / HOME
-    ========================== -->
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
     <main>
 
-        <section id="home" class="hero-section">
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section
+            id="home"
+            class="hero-section">
+
 
             <div class="hero-container">
 
-                <!-- Left Side -->
+
+                <!-- HERO LEFT -->
 
                 <div class="hero-content">
 
+
                     <div class="small-label">
+
                         SKILLHUB • DIGITAL LEARNING
+
                     </div>
 
+
                     <h1>
+
                         BUILD SKILLS
+
                         <br>
-                        <strong>FOR THE WORLD AHEAD.</strong>
+
+                        <strong>
+                            FOR THE WORLD AHEAD.
+                        </strong>
+
                     </h1>
+
 
                     <p class="hero-description">
 
-                        Learn practical knowledge around motivation,
-                        business ideas, personal growth and
-                        earning-related skills — all in one focused course.
+                        Learn practical knowledge around
+                        motivation, business ideas,
+                        personal growth and earning-related
+                        skills — all in one focused course.
 
                     </p>
 
+
                     <div class="hero-buttons">
+
 
                         <button
                             class="primary-button"
@@ -137,9 +239,12 @@
 
                             Start Learning
 
-                            <span>↗</span>
+                            <span>
+                                ↗
+                            </span>
 
                         </button>
+
 
                         <a
                             href="#course"
@@ -149,36 +254,66 @@
 
                         </a>
 
+
                     </div>
 
 
                     <div class="hero-features">
 
-                        <div>
-                            <strong>₹199</strong>
-                            <span>One-time payment</span>
-                        </div>
 
                         <div>
-                            <strong>10</strong>
-                            <span>Video lessons</span>
+
+                            <strong>
+                                ₹199
+                            </strong>
+
+                            <span>
+                                One-time payment
+                            </span>
+
                         </div>
 
+
                         <div>
-                            <strong>1 Year</strong>
-                            <span>Course access</span>
+
+                            <strong>
+                                10
+                            </strong>
+
+                            <span>
+                                Video lessons
+                            </span>
+
                         </div>
+
+
+                        <div>
+
+                            <strong>
+                                1 Year
+                            </strong>
+
+                            <span>
+                                Course access
+                            </span>
+
+                        </div>
+
 
                     </div>
+
 
                 </div>
 
 
-                <!-- Right Side Illustration -->
+
+                <!-- HERO RIGHT -->
 
                 <div class="hero-visual">
 
-                    <div class="floating-card card-business">
+
+                    <div
+                        class="floating-card card-business">
 
                         <div class="card-title">
                             BUSINESS
@@ -192,12 +327,15 @@
                             Ideas • Skills • Growth
                         </p>
 
-                        <span class="card-arrow">↗</span>
+                        <span class="card-arrow">
+                            ↗
+                        </span>
 
                     </div>
 
 
-                    <div class="floating-card card-growth">
+                    <div
+                        class="floating-card card-growth">
 
                         <div class="card-title">
                             PERSONAL
@@ -214,7 +352,8 @@
                     </div>
 
 
-                    <div class="floating-card card-earning">
+                    <div
+                        class="floating-card card-earning">
 
                         <div class="card-title">
                             EARNING
@@ -228,41 +367,54 @@
                             Digital • Practical
                         </p>
 
-                        <span class="card-arrow">↗</span>
+                        <span class="card-arrow">
+                            ↗
+                        </span>
 
                     </div>
 
 
                     <div class="visual-search">
 
-                        <span class="search-icon">⌕</span>
+                        <span class="search-icon">
+                            ⌕
+                        </span>
 
                         <span>
                             Build your future with SkillHub
                         </span>
 
-                        <span class="search-arrow">↑</span>
+                        <span class="search-arrow">
+                            ↑
+                        </span>
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =========================
-             COURSE SECTION
-        ========================== -->
+
+        <!-- =================================================
+             COURSE
+        ================================================== -->
 
         <section
             id="course"
             class="course-section">
 
+
             <div class="section-container">
 
+
                 <div class="section-header">
+
 
                     <div>
 
@@ -270,17 +422,25 @@
                             THE SKILLHUB COURSE
                         </div>
 
+
                         <h2>
+
                             10 lessons.
+
                             <br>
+
                             One focused path.
+
                         </h2>
 
                     </div>
 
+
                     <div class="course-price">
 
-                        <strong>₹199</strong>
+                        <strong>
+                            ₹199
+                        </strong>
 
                         <span>
                             One-time payment
@@ -288,15 +448,20 @@
 
                     </div>
 
+
                 </div>
 
+
+                <!-- LESSONS -->
 
                 <div class="course-grid">
 
 
                     <div class="course-card">
 
-                        <span>LESSON 01</span>
+                        <span>
+                            LESSON 01
+                        </span>
 
                         <h3>
                             Mindset & Motivation
@@ -312,7 +477,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 02</span>
+                        <span>
+                            LESSON 02
+                        </span>
 
                         <h3>
                             Personal Discipline
@@ -328,7 +495,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 03</span>
+                        <span>
+                            LESSON 03
+                        </span>
 
                         <h3>
                             Business Ideas
@@ -344,7 +513,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 04</span>
+                        <span>
+                            LESSON 04
+                        </span>
 
                         <h3>
                             Understanding Customers
@@ -360,7 +531,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 05</span>
+                        <span>
+                            LESSON 05
+                        </span>
 
                         <h3>
                             Starting Small
@@ -376,7 +549,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 06</span>
+                        <span>
+                            LESSON 06
+                        </span>
 
                         <h3>
                             Digital Skills
@@ -392,7 +567,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 07</span>
+                        <span>
+                            LESSON 07
+                        </span>
 
                         <h3>
                             Earning Knowledge
@@ -408,7 +585,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 08</span>
+                        <span>
+                            LESSON 08
+                        </span>
 
                         <h3>
                             Money Management
@@ -424,7 +603,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 09</span>
+                        <span>
+                            LESSON 09
+                        </span>
 
                         <h3>
                             Growth & Consistency
@@ -440,7 +621,9 @@
 
                     <div class="course-card">
 
-                        <span>LESSON 10</span>
+                        <span>
+                            LESSON 10
+                        </span>
 
                         <h3>
                             Your Action Plan
@@ -453,10 +636,14 @@
 
                     </div>
 
+
                 </div>
 
 
+                <!-- COURSE CTA -->
+
                 <div class="course-bottom">
+
 
                     <div>
 
@@ -470,34 +657,44 @@
 
                     </div>
 
+
                     <button
                         class="primary-button"
                         onclick="openAuth('signup')">
 
                         Get Access
 
-                        <span>→</span>
+                        <span>
+                            →
+                        </span>
 
                     </button>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =========================
-             REFERRAL SECTION
-        ========================== -->
+
+        <!-- =================================================
+             REFERRAL
+        ================================================== -->
 
         <section
             id="referral"
             class="referral-section">
 
+
             <div class="section-container">
 
+
                 <div class="referral-header">
+
 
                     <div>
 
@@ -506,26 +703,36 @@
                         </div>
 
                         <h2>
+
                             Share skills.
+
                             <br>
+
                             Earn rewards.
+
                         </h2>
 
                     </div>
 
+
                     <p>
 
                         Invite someone to SkillHub.
+
                         When they successfully purchase
                         the ₹199 course, you receive
                         <strong>₹100</strong> commission.
 
                     </p>
 
+
                 </div>
 
 
+                <!-- REFERRAL BOX -->
+
                 <div class="referral-box">
+
 
                     <div>
 
@@ -539,6 +746,7 @@
 
                     </div>
 
+
                     <button
                         class="primary-button"
                         onclick="copyReferralLink()">
@@ -547,10 +755,14 @@
 
                     </button>
 
+
                 </div>
 
 
+                <!-- REFERRAL STATS -->
+
                 <div class="referral-stats">
+
 
                     <div class="stat-card">
 
@@ -590,32 +802,44 @@
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =========================
-             ABOUT SECTION
-        ========================== -->
+
+        <!-- =================================================
+             ABOUT
+        ================================================== -->
 
         <section
             id="about"
             class="about-section">
 
+
             <div class="section-container">
+
 
                 <div class="small-label">
                     ABOUT SKILLHUB
                 </div>
 
+
                 <h2>
+
                     Simple learning
+
                     <br>
+
                     for practical growth.
+
                 </h2>
+
 
                 <p>
 
@@ -627,22 +851,28 @@
 
                 </p>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- =========================
+
+        <!-- =================================================
              USER DASHBOARD
-        ========================== -->
+        ================================================== -->
 
         <section
             id="dashboard"
             class="dashboard-section hidden">
 
+
             <div class="section-container">
 
+
                 <div class="dashboard-header">
+
 
                     <div>
 
@@ -650,11 +880,15 @@
                             MY ACCOUNT
                         </div>
 
+
                         <h2 id="dashboardWelcome">
+
                             Welcome to SkillHub
+
                         </h2>
 
                     </div>
+
 
                     <button
                         class="secondary-button"
@@ -664,26 +898,35 @@
 
                     </button>
 
+
                 </div>
 
 
                 <div class="dashboard-grid">
 
 
+                    <!-- COURSE STATUS -->
+
                     <div class="dashboard-card">
+
 
                         <span>
                             COURSE STATUS
                         </span>
 
+
                         <strong id="courseStatus">
                             Locked
                         </strong>
 
+
                         <p id="courseExpiry">
+
                             Purchase the course
                             to unlock your lessons.
+
                         </p>
+
 
                         <button
                             id="purchaseCourseButton"
@@ -693,23 +936,35 @@
 
                         </button>
 
+
                     </div>
 
 
+                    <!-- REFERRAL -->
+
                     <div class="dashboard-card">
+
 
                         <span>
                             MY REFERRAL CODE
                         </span>
 
-                        <strong id="dashboardReferralCode">
+
+                        <strong
+                            id="dashboardReferralCode">
+
                             —
+
                         </strong>
 
+
                         <p>
+
                             Share your referral link
                             with friends.
+
                         </p>
+
 
                         <button
                             class="secondary-button"
@@ -719,30 +974,46 @@
 
                         </button>
 
+
                     </div>
 
 
+                    <!-- EARNINGS -->
+
                     <div class="dashboard-card">
+
 
                         <span>
                             TOTAL EARNINGS
                         </span>
 
+
                         <strong id="dashboardEarnings">
+
                             ₹0
+
                         </strong>
 
+
                         <p>
+
                             Pending: ₹0
+
                             <br>
+
                             Withdrawn: ₹0
+
                         </p>
+
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
 
         </section>
 
@@ -750,15 +1021,20 @@
     </main>
 
 
-    <!-- =========================
-         SIGNUP / LOGIN MODAL
-    ========================== -->
+
+    <!-- =====================================================
+         AUTH MODAL
+    ====================================================== -->
 
     <div
         id="authModal"
         class="modal-overlay hidden">
 
+
         <div class="auth-modal">
+
+
+            <!-- CLOSE -->
 
             <button
                 class="modal-close"
@@ -770,135 +1046,149 @@
 
 
             <div class="small-label">
+
                 SKILLHUB ACCOUNT
+
             </div>
 
 
             <h2 id="authTitle">
+
                 Create your account
+
             </h2>
 
 
-            <!-- SIGNUP FORM -->
+
+            <!-- =============================================
+                 SIGNUP FORM
+            ============================================== -->
 
             <div id="signupForm">
+
+
+                <!-- FULL NAME -->
 
                 <label>
                     Full Name
                 </label>
 
+
                 <input
                     type="text"
                     id="fullName"
-                    placeholder="Enter your full name">
+                    placeholder="Enter your full name"
+                    autocomplete="name">
 
+
+
+                <!-- EMAIL -->
 
                 <label>
                     Email Address
                 </label>
 
+
                 <input
                     type="email"
                     id="email"
-                    placeholder="Enter your email">
+                    placeholder="Enter your email"
+                    autocomplete="email">
 
+
+
+                <!-- PASSWORD -->
 
                 <label>
                     Password
                 </label>
 
+
                 <input
                     type="password"
                     id="password"
-                    placeholder="Create password">
+                    placeholder="Create password"
+                    autocomplete="new-password">
 
 
-                <label>
-                    Mobile Number
-                </label>
 
-                <input
-                    type="tel"
-                    id="phone"
-                    placeholder="+91 9876543210">
-
+                <!-- REFERRAL -->
 
                 <label>
+
                     Referral Code
+
                     <span class="optional">
                         (Optional)
                     </span>
+
                 </label>
+
 
                 <input
                     type="text"
                     id="referralInput"
-                    placeholder="Enter referral code">
+                    placeholder="Enter referral code"
+                    autocomplete="off">
 
 
-                <div id="recaptcha-container"></div>
 
+                <!-- CREATE ACCOUNT -->
 
                 <button
-                    id="sendOtpButton"
+                    id="createAccountButton"
                     class="primary-button full-button">
 
-                    Send OTP
+                    Create Account
 
                 </button>
 
 
-                <div
-                    id="otpSection"
-                    class="hidden">
+                <p class="email-note">
 
-                    <label>
-                        Enter OTP
-                    </label>
+                    A verification link will be sent
+                    to your email after registration.
 
-                    <input
-                        type="text"
-                        id="otp"
-                        placeholder="Enter verification code">
+                </p>
 
-
-                    <button
-                        id="verifyOtpButton"
-                        class="primary-button full-button">
-
-                        Verify & Create Account
-
-                    </button>
-
-                </div>
 
             </div>
 
 
-            <!-- LOGIN FORM -->
+
+            <!-- =============================================
+                 LOGIN FORM
+            ============================================== -->
 
             <div
                 id="loginForm"
                 class="hidden">
 
+
                 <label>
                     Email
                 </label>
 
+
                 <input
                     type="email"
                     id="loginEmail"
-                    placeholder="Enter your email">
+                    placeholder="Enter your email"
+                    autocomplete="email">
+
 
 
                 <label>
                     Password
                 </label>
 
+
                 <input
                     type="password"
                     id="loginPassword"
-                    placeholder="Enter your password">
+                    placeholder="Enter your password"
+                    autocomplete="current-password">
+
 
 
                 <button
@@ -909,8 +1199,12 @@
 
                 </button>
 
+
             </div>
 
+
+
+            <!-- AUTH MESSAGE -->
 
             <p
                 id="authMessage"
@@ -918,11 +1212,18 @@
             </p>
 
 
+
+            <!-- SWITCH LOGIN / SIGNUP -->
+
             <div class="auth-switch">
 
+
                 <span id="authSwitchText">
+
                     Already have an account?
+
                 </span>
+
 
                 <button
                     id="authSwitchButton"
@@ -932,65 +1233,87 @@
 
                 </button>
 
+
             </div>
 
+
         </div>
+
 
     </div>
 
 
-    <!-- =========================
+
+    <!-- =====================================================
          FOOTER
-    ========================== -->
+    ====================================================== -->
 
     <footer class="footer">
 
+
         <div class="footer-container">
+
 
             <div>
 
+
                 <div class="logo footer-logo">
+
 
                     <div class="logo-icon">
                         S
                     </div>
 
+
                     <span>
+
                         Skill<span class="logo-blue">
                             Hub
                         </span>
+
                     </span>
 
+
                 </div>
+
 
                 <p>
                     Learn. Grow. Earn.
                 </p>
 
+
             </div>
 
 
+
             <div class="footer-links">
+
 
                 <a href="#home">
                     Home
                 </a>
 
+
                 <a href="#course">
                     Course
                 </a>
+
 
                 <a href="#referral">
                     Referral
                 </a>
 
+
                 <a href="#about">
                     About
                 </a>
 
+
             </div>
 
+
         </div>
+
 
 
         <div class="footer-bottom">
@@ -999,186 +1322,52 @@
 
         </div>
 
+
     </footer>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+
+    <!-- =====================================================
+         MOBILE MENU FUNCTIONS ONLY
+    ====================================================== -->
 
     <script>
 
-        /*
-         * Temporary frontend functions.
-         *
-         * Firebase authentication will be connected
-         * in app.js in the next step.
-         */
-
-
-        let currentAuthMode = "signup";
-
-
-        function openAuth(mode) {
-
-            currentAuthMode = mode;
-
-            const modal =
-                document.getElementById("authModal");
-
-            modal.classList.remove("hidden");
-
-            updateAuthMode();
-
-        }
-
-
-        function closeAuth() {
-
-            document
-                .getElementById("authModal")
-                .classList.add("hidden");
-
-        }
-
-
-        function switchAuthMode() {
-
-            currentAuthMode =
-                currentAuthMode === "signup"
-                    ? "login"
-                    : "signup";
-
-            updateAuthMode();
-
-        }
-
-
-        function updateAuthMode() {
-
-            const signupForm =
-                document.getElementById("signupForm");
-
-            const loginForm =
-                document.getElementById("loginForm");
-
-            const title =
-                document.getElementById("authTitle");
-
-            const switchText =
-                document.getElementById("authSwitchText");
-
-            const switchButton =
-                document.getElementById("authSwitchButton");
-
-
-            if (currentAuthMode === "signup") {
-
-                signupForm.classList.remove("hidden");
-
-                loginForm.classList.add("hidden");
-
-                title.textContent =
-                    "Create your account";
-
-                switchText.textContent =
-                    "Already have an account?";
-
-                switchButton.textContent =
-                    "Log in";
-
-            } else {
-
-                signupForm.classList.add("hidden");
-
-                loginForm.classList.remove("hidden");
-
-                title.textContent =
-                    "Welcome back";
-
-                switchText.textContent =
-                    "Don't have an account?";
-
-                switchButton.textContent =
-                    "Sign Up";
-
-            }
-
-        }
-
-
         function toggleMobileMenu() {
 
-            document
-                .getElementById("mobileMenu")
-                .classList.toggle("active");
+            const menu =
+                document.getElementById(
+                    "mobileMenu"
+                );
+
+            if (!menu) return;
+
+            menu.classList.toggle(
+                "active"
+            );
 
         }
 
 
         function closeMobileMenu() {
 
-            document
-                .getElementById("mobileMenu")
-                .classList.remove("active");
+            const menu =
+                document.getElementById(
+                    "mobileMenu"
+                );
 
-        }
+            if (!menu) return;
 
-
-        function copyReferralLink() {
-
-            const code =
-                document
-                    .getElementById("referralCode")
-                    .textContent;
-
-            if (
-                code === "LOGIN TO GET YOUR CODE" ||
-                code === "—"
-            ) {
-
-                openAuth("signup");
-
-                return;
-
-            }
-
-
-            const referralLink =
-                window.location.origin +
-                "/?ref=" +
-                encodeURIComponent(code);
-
-
-            navigator.clipboard
-                .writeText(referralLink)
-                .then(() => {
-
-                    alert(
-                        "Referral link copied!"
-                    );
-
-                });
-
-        }
-
-
-        function logoutUser() {
-
-            /*
-             * Firebase logout will be connected
-             * in app.js.
-             */
-
-            alert(
-                "Firebase logout will be connected next."
+            menu.classList.remove(
+                "active"
             );
 
         }
 
 
         /*
-         * Close modal when clicking outside.
+         * Close authentication modal
+         * when clicking outside.
          */
 
         document
@@ -1188,11 +1377,17 @@
                 function(event) {
 
                     if (
-                        event.target ===
-                        this
+                        event.target === this
                     ) {
 
-                        closeAuth();
+                        if (
+                            typeof window.closeAuth ===
+                            "function"
+                        ) {
+
+                            window.closeAuth();
+
+                        }
 
                     }
 
@@ -1201,11 +1396,12 @@
 
 
         /*
-         * Automatically read referral code
-         * from URL.
+         * Read referral code from URL.
          *
          * Example:
-         * yourwebsite.com/?ref=SH123ABC
+         *
+         * https://yourdomain.com/?ref=SH123456
+         *
          */
 
         const urlParams =
@@ -1213,24 +1409,46 @@
                 window.location.search
             );
 
+
         const referralFromURL =
             urlParams.get("ref");
 
 
         if (referralFromURL) {
 
-            const referralInput =
-                document.getElementById(
-                    "referralInput"
-                );
-
-            referralInput.value =
-                referralFromURL;
+            localStorage.setItem(
+                "skillhubReferralCode",
+                referralFromURL
+                    .trim()
+                    .toUpperCase()
+            );
 
         }
+
     </script>
-    
-    <script type="module" src="./app.js"></script>
+
+
+
+    <!-- =====================================================
+         RAZORPAY CHECKOUT
+    ====================================================== -->
+
+    <script
+        src="https://checkout.razorpay.com/v1/checkout.js">
+    </script>
+
+
+
+    <!-- =====================================================
+         SKILLHUB APP
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="./app.js">
+    </script>
+
 
 </body>
+
 </html>
