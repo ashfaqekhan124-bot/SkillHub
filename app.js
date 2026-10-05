@@ -2038,3 +2038,68 @@ document.addEventListener(
 console.log(
     "SkillHub Email Authentication initialized."
 );
+// =========================================================
+// PASSWORD SHOW / HIDE
+// =========================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+        const passwordToggle =
+            document.getElementById(
+                "passwordToggle"
+            );
+
+        if (
+            !passwordInput ||
+            !passwordToggle
+        ) {
+            return;
+        }
+
+        passwordToggle.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    passwordInput.type ===
+                    "password"
+                ) {
+
+                    passwordInput.type =
+                        "text";
+
+                    passwordToggle.textContent =
+                        "🙈";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    passwordInput.type =
+                        "password";
+
+                    passwordToggle.textContent =
+                        "👁";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
