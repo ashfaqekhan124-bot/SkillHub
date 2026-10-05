@@ -1811,3 +1811,14 @@ img {
         font-size: 27px;
     }
 }
+.email-note {
+    margin-top: 14px;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    color: #687487;
+
+    text-align: center;
+}
